@@ -85,7 +85,7 @@ dep_install:
         python3-pip \
         curl lsof \
         qemu-kvm bridge-utils qemu-system-x86
-	python3 -m pip install --user uploadserver
+	python3 -m pip install --user uploadserver --break-system-packages
 
 dep_check_qemu:
 	@$(call check_dep, qemu-kvm)
