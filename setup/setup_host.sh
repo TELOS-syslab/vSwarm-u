@@ -71,52 +71,61 @@ END=$(date +%s.%N)
 echo "Took now:" $(echo "$END - $START" | bc)
 
 # Install docker
-sudo apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg-agent \
-    lsb-release \
-    software-properties-common \
-&& curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-#curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+if command -v docker >/dev/null 2>&1; then
+  echo "$(docker --version) has already Installed!"
+  echo "Skip docker Installation!"
+else
+  sudo apt-get install -y \
+      apt-transport-https \
+      ca-certificates \
+      curl \
+      gnupg-agent \
+      lsb-release \
+      software-properties-common \
+  && curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+  #curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
 
 
-sudo add-apt-repository \
-    "deb [arch=${ARCH}] https://download.docker.com/linux/debian \
-    $(lsb_release -cs) \
-    stable"
-sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io
+  sudo add-apt-repository \
+      "deb [arch=${ARCH}] https://download.docker.com/linux/debian \
+      $(lsb_release -cs) \
+      stable"
+  sudo apt update
+  sudo apt install -y docker-ce docker-ce-cli containerd.io
+fi
 #&& sudo apt-get update >> /dev/null \
 #&& sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 ## Install also docker compose
-sudo apt install -y python3-pip
-sudo pip3 install -r ${ROOT}/setup/requirements.txt
+#sudo apt install -y python3-pip
+#sudo pip3 install -r ${ROOT}/setup/requirements.txt
 
 ## Install qemu
 make -f ${ROOT}/setup/disk.Makefile dep_install
 
-
 # Install golang
-GO_VERSION=1.21.6
-GO_BUILD="go${GO_VERSION}.linux-${ARCH}"
+if command -v go >/dev/null 2>&1; then
+  echo "$(go version) has already Installed!"
+else
+  GO_VERSION=1.21.6
+  GO_BUILD="go${GO_VERSION}.linux-${ARCH}"
 
-wget --continue https://go.dev/dl/${GO_BUILD}.tar.gz
+  wget --continue https://go.dev/dl/go1.21.6.linux-amd64.tar.gz
 
-sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf ${GO_BUILD}.tar.gz
-rm ${GO_BUILD}.tar.gz
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf ${GO_BUILD}.tar.gz
+  rm ${GO_BUILD}.tar.gz
 
-export PATH=$PATH:/usr/local/go/bin
-sudo sh -c  "echo 'export PATH=\$PATH:/usr/local/go/bin' >> /etc/profile"
-sudo sh -c  "echo 'export PATH=\$PATH:/usr/local/go/bin' >> ${HOME}/.bashrc"
+  export PATH=$PATH:/usr/local/go/bin
+  sudo sh -c  "echo 'export PATH=\$PATH:/usr/local/go/bin' >> /etc/profile"
+  sudo sh -c  "echo 'export PATH=\$PATH:/usr/local/go/bin' >> ${HOME}/.bashrc"
 
-source ${HOME}/.bashrc
-echo "Installed: $(go version)"
+  source ${HOME}/.bashrc
+  echo "Installed: $(go version)"
+fi
 
 END=$(date +%s.%N)
 printf "\nInstalling dependencies completed successfully after: $(echo "$END - $START" | bc) sec.\n"
@@ -134,10 +143,31 @@ printf "\nBuilding gem5 completed after: $(echo "$END - $START" | bc) sec.\n"
 
 
 ## Download the most recent release artifacts
-START=$(date +%s.%N)
-echo "Download Release artifacts from: "
+FILES=("client" "kernel" "disk-image.qcow2")
 
-${ROOT}/resources/artifacts.py --output ${ROOT}/resources/
+if [ ! -d "${ROOT}/resources/" ]; then
+    mkdir -p "${ROOT}/resources/"
+fi
 
-END=$(date +%s.%N)
-printf "\nDownload artifacts complete. Took: $(echo "$END - $START" | bc) sec.\n"
+MISSING=0
+for FILE in "${FILES[@]}"; do
+    if [ ! -f "${ROOT}/resources/${FILE}" ]; then
+        echo "${FILE} not found!"
+        MISSING=1
+    else
+        echo "${FILE} exist!"
+    fi
+done
+
+if [ "$MISSING" -eq 1 ]; then
+  START=$(date +%s.%N)
+  echo "Download Release artifacts from: "
+
+  ${ROOT}/resources/artifacts.py --output ${ROOT}/resources/
+
+  END=$(date +%s.%N)
+  printf "\nDownload artifacts complete. Took: $(echo "$END - $START" | bc) sec.\n"
+else
+    echo "Artifacts are existing in ${ROOT}/resources/"
+fi
+
