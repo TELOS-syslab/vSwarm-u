@@ -149,7 +149,11 @@ if [ ! -d "${ROOT}/resources/" ]; then
     mkdir -p "${ROOT}/resources/"
 fi
 
+<<<<<<< HEAD
 MISSING=-1
+=======
+MISSING=0
+>>>>>>> 279c54e2005faa1a6696695ce645ef01a7d149e8
 for FILE in "${FILES[@]}"; do
     if [ ! -f "${ROOT}/resources/${FILE}" ]; then
         echo "${FILE} not found!"
