@@ -63,9 +63,9 @@ fi
 
 echo "Install all resources to: ${RESOURCES}"
 
-sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-sudo apt-get update >> /dev/null
-sudo apt-get -y upgrade
+#sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+#sudo apt-get update >> /dev/null
+#sudo apt-get -y upgrade
 
 END=$(date +%s.%N)
 echo "Took now:" $(echo "$END - $START" | bc)
@@ -76,15 +76,22 @@ sudo apt-get install -y \
     ca-certificates \
     curl \
     gnupg-agent \
+    lsb-release \
     software-properties-common \
-&& curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+&& curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+#curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+
 
 sudo add-apt-repository \
-    "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu \
+    "deb [arch=${ARCH}] https://download.docker.com/linux/debian \
     $(lsb_release -cs) \
-    stable" \
-&& sudo apt-get update >> /dev/null \
-&& sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+    stable"
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+#&& sudo apt-get update >> /dev/null \
+#&& sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 ## Install also docker compose
 sudo apt install -y python3-pip
@@ -98,7 +105,7 @@ make -f ${ROOT}/setup/disk.Makefile dep_install
 GO_VERSION=1.21.6
 GO_BUILD="go${GO_VERSION}.linux-${ARCH}"
 
-wget --continue https://golang.org/dl/${GO_BUILD}.tar.gz
+wget --continue https://go.dev/dl/${GO_BUILD}.tar.gz
 
 sudo rm -rf /usr/local/go
 sudo tar -C /usr/local -xzf ${GO_BUILD}.tar.gz
