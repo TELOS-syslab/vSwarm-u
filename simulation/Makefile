@@ -207,19 +207,21 @@ install_check: $(LOGFILE)
 
 ####
 # File server
-$(SERVE):
+#: $(SERVE)
+#PID=$$(lsof -t -i :3003);
+#if [ ! -z $$PID ]; then kill -9 $$PID; fi
+
+
+serve_start:
 	PID=$$(lsof -t -i :3003); \
 	if [ ! -z $$PID ]; then kill -9 $$PID; fi
-
 	python3 -m uploadserver -d $(WORKING_DIR) 3003 &  \
 	echo "$$!" > $@ ;
 	sleep 2
 	@echo "Run server: $$(cat $@ )"
 
-serve_start: $(SERVE)
-
 serve_stop:
-	if [ -e $(SERVE) ]; then kill `cat $(SERVE)` && rm $(SERVE) 2> /dev/null; fi
+	if [ -e serve_start ]; then kill `cat serve_start` && rm serve_start 2> /dev/null; fi
 	PID=$$(lsof -t -i :3003); \
 	if [ ! -z $$PID ]; then kill -9 $$PID; fi
 
