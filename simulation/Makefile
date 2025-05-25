@@ -162,6 +162,15 @@ run_simulator:
 
 
 
+change-test-client: 
+	cp $(ROOT)/simulation/install_client.sh $(WORKING_DIR)/run.sh
+	tar -cvzf $(WORKING_DIR)/client.tar.gz tools/client
+	$(MAKE) -f $(MKFILE) serve_start
+	$(MAKE) -f $(MKFILE) run_emulator
+	$(MAKE) -f $(MKFILE) serve_stop
+	rm $(WORKING_DIR)/run.sh
+	rm -rf $(WORKING_DIR)/client.tar.gz
+
 
 
 ## Install functions --------------------------------------

@@ -54,8 +54,8 @@ start_logging
 {
 # set -e
 ## Download the test client.
-curl  "http://10.0.2.2:3003/test-client" -f -o /root/test-client
-chmod 755 /root/test-client
+#curl  "http://10.0.2.2:3003/test-client" -f -o /root/test-client
+#chmod 755 /root/test-client
 
 ## Download the function yaml and list.
 curl  "http://10.0.2.2:3003/functions.yaml" -f -o /root/functions.yaml

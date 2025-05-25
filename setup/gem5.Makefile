@@ -28,7 +28,7 @@ ROOT 		:= $(abspath $(dir $(mkfile_path))/../)
 
 ## User specific inputs
 RESOURCES 	?=$(ROOT)/resources/
-ARCH		:= ALL
+ARCH		:= X86
 VERSION     := v24.0.0.0
 
 GEM5_DIR 	?= $(RESOURCES)/gem5/
