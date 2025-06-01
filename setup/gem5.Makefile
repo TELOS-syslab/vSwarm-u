@@ -53,15 +53,15 @@ dep_install:
 
 ## Clone repo --
 $(GEM5_DIR):
-	git clone https://github.com/gem5/gem5.git $@
-	cd $@; git checkout $(VERSION)
+	git clone git@github.com:TELOS-syslab/Interference-Gem5.git $@
+#	cd $@; git checkout $(VERSION)
 
 
 ## Build
 gem5: $(GEM5_DIR)
 	@$(call print_config)
 	cd $(GEM5_DIR); \
-	git checkout $(VERSION); \
+#	git checkout $(VERSION); \
 	scons build/$(ARCH)/gem5.opt -j $$(nproc) --install-hooks
 
 

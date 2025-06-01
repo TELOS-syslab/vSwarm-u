@@ -55,7 +55,7 @@ fi
 if [[ -z "${GEM5_DIR}" ]]; then
   echo "Warning: GEM5_DIR environmental variable is not set."
   echo "Warning: Will be set to the default `resources/` in this repo"
-  GEM5_DIR=$ROOT/resources/gem5/
+  GEM5_DIR=$ROOT/resources/Interference-Gem5/
   export GEM5_DIR=$GEM5_DIR
   sudo sh -c  "echo 'export GEM5_DIR=${GEM5_DIR}' >> /etc/profile"
   sudo sh -c  "echo 'export GEM5_DIR=${GEM5_DIR}' >> ${HOME}/.bashrc"

@@ -29,7 +29,7 @@ ROOT 		:= $(abspath $(dir $(MKFILE))/../)
 ## User specific inputs
 RESOURCES 	?= $(ROOT)/resources/
 WORKING_DIR ?= $(ROOT)/wkdir/
-GEM5_DIR	?= $(RESOURCES)/gem5/
+GEM5_DIR	?= $(RESOURCES)/Interference-Gem5/
 
 
 ## Machine parameter
@@ -42,7 +42,7 @@ CPU 	?= host -enable-kvm
 KERNEL 		?= $(RESOURCES)/kernel
 CLIENT 		?= $(RESOURCES)/client
 DISK		?= $(RESOURCES)/disk-image.qcow2
-GEM5		?= $(RESOURCES)/gem5/build/X86/gem5.opt
+GEM5		?= $(RESOURCES)/Interference-Gem5/build/X86/gem5.opt
 
 
 
@@ -162,7 +162,7 @@ run_simulator:
 
 
 
-change-test-client: 
+install_test_client: 
 	cp $(ROOT)/simulation/install_client.sh $(WORKING_DIR)/run.sh
 	tar -cvzf $(WORKING_DIR)/client.tar.gz tools/client
 	$(MAKE) -f $(MKFILE) serve_start

@@ -238,4 +238,6 @@ resources/*
 !resources/artifacts*
 !resources/release*
 !resources/**.py
+!resources/DockerProxy.sh
+!resources/daemon.json
 
